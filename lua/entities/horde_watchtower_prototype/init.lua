@@ -24,7 +24,7 @@ function ENT:Initialize()
     self.Horde_ShockwaveInterval = 2
     self.Horde_WatchTower = true
     self.Horde_NextShockAttack = CurTime()
-    self.Horde_ShockAttackInterval = 0.1
+    self.Horde_ShockAttackInterval = 0.2
     self:SetColor(Color(0, 0, 0))
 
     if self.Horde_Owner:Horde_GetPerk("warden_restock") then
@@ -66,7 +66,7 @@ function ENT:Think()
         dmg:SetAttacker(self.Horde_Owner)
         dmg:SetInflictor(self)
         dmg:SetDamageType(DMG_BULLET)
-        dmg:SetDamage(5)
+        dmg:SetDamage(12)
         for _, ent in pairs(ents.FindInSphere(self:GetPos(), 200)) do
             if ent:IsValid() and ent:IsNPC() and ent:Health() > 0 and not HORDE:IsPlayerMinion(ent) then
                 dmg:SetDamagePosition(ent:GetPos() + ent:OBBCenter())
