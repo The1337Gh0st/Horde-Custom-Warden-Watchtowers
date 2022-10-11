@@ -24,8 +24,8 @@ function ENT:Initialize()
     self.Horde_ShockwaveInterval = 2
     self.Horde_WatchTower = true
     self.Horde_NextShockAttack = CurTime()
-    self.Horde_ShockAttackInterval = 0.2
-    self:SetColor(Color(0, 0, 0))
+    self.Horde_ShockAttackInterval = 0.5
+    self:SetColor(Color(0, 80, 181))
 
     if self.Horde_Owner:Horde_GetPerk("warden_restock") then
         self.Horde_ThinkInterval = 15
@@ -62,21 +62,13 @@ function ENT:Think()
     end
 
     if CurTime() >= self.Horde_NextShockAttack + self.Horde_ShockAttackInterval then
-        local dmg = DamageInfo()
-        dmg:SetAttacker(self.Horde_Owner)
-        dmg:SetInflictor(self)
-        dmg:SetDamageType(DMG_BULLET)
-        dmg:SetDamage(25)
         for _, ent in pairs(ents.FindInSphere(self:GetPos(), 200)) do
-            if ent:IsValid() and ent:IsNPC() and ent:Health() > 0 and not HORDE:IsPlayerMinion(ent) then
-                dmg:SetDamagePosition(ent:GetPos() + ent:OBBCenter())
-                self:EmitSound("weapons/pistol/pistol_fire2.wav")
-                util.BlastDamageInfo(dmg, ent:GetPos(), 1)
-		--		local e = EffectData()
-	--	e:SetOrigin(self:GetPos())
-				--util.Effect("muzzleflash_m3", e, true, true)				
-            --    util.ParticleTracerEx("tau_beam", self:GetPos(), ent:GetPos() + ent:OBBCenter(), true, self:EntIndex(), -1)
-             --   util.ParticleTracerEx("vortigaunt_beam_b", self:GetPos(), ent:GetPos() + ent:OBBCenter(), true, self:EntIndex(), -1)
+            if ent:IsValid() and ent:IsPlayer() and ent:Armor() < 100 then
+               ent:SetArmor(math.min(100,ent:Armor()+2))
+           sound.Play("horde/weapons/welder/spark"..math.random(1,4)..".ogg", ent:GetPos(), 75, 100, 1)
+                util.ParticleTracerEx("vortigaunt_beam", self:GetPos(), ent:GetPos() + ent:OBBCenter(), true, self:EntIndex(), -1)
+				util.ParticleTracerEx("vortigaunt_beam_b", self:GetPos(), ent:GetPos() + ent:OBBCenter(), true, self:EntIndex(), -1)
+	
                 break
             end
         end
