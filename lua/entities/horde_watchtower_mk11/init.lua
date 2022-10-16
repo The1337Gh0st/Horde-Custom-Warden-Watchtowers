@@ -24,8 +24,8 @@ function ENT:Initialize()
     self.Horde_ShockwaveInterval = 2
     self.Horde_WatchTower = true
     self.Horde_NextShockAttack = CurTime()
-    self.Horde_ShockAttackInterval = 0.125
-    self:SetColor(Color(0, 80, 181))
+    self.Horde_ShockAttackInterval = 2
+    self:SetColor(Color(255, 0, 0))
 
     if self.Horde_Owner:Horde_GetPerk("warden_restock") then
         self.Horde_ThinkInterval = 15
@@ -62,13 +62,21 @@ function ENT:Think()
     end
 
     if CurTime() >= self.Horde_NextShockAttack + self.Horde_ShockAttackInterval then
+local healinfo = HealInfo:New({amount=10, healer=self:GetNWEntity("HordeOwner")})
         for _, ent in pairs(ents.FindInSphere(self:GetPos(), 200)) do
-            if ent:IsValid() and ent:IsPlayer() and ent:Armor() < 100 then
-               ent:SetArmor(math.min(100,ent:Armor()+1))
-           sound.Play("horde/weapons/welder/spark"..math.random(1,4)..".ogg", ent:GetPos(), 75, 100, 1)
+            if ent:IsValid() and ent:IsPlayer() then
+			--and ent:Health() > 0 and ent:Health() < ent:GetMaxHealth() then
+                ent:EmitSound("items/medshot4.wav")
+				
+				
+    for debuff, buildup in pairs(ent.Horde_Debuff_Buildup) do
+        ent:Horde_RemoveDebuff(debuff)
+        ent:Horde_ReduceDebuffBuildup(debuff, buildup)
+    end
+               
+            HORDE:OnPlayerHeal(ent, healinfo)
                 util.ParticleTracerEx("vortigaunt_beam", self:GetPos(), ent:GetPos() + ent:OBBCenter(), true, self:EntIndex(), -1)
-				util.ParticleTracerEx("vortigaunt_beam_b", self:GetPos(), ent:GetPos() + ent:OBBCenter(), true, self:EntIndex(), -1)
-	
+                util.ParticleTracerEx("vortigaunt_beam_b", self:GetPos(), ent:GetPos() + ent:OBBCenter(), true, self:EntIndex(), -1)
                 break
             end
         end
