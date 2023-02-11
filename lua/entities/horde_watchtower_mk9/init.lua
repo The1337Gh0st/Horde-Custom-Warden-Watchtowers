@@ -24,7 +24,7 @@ function ENT:Initialize()
     self.Horde_ShockwaveInterval = 2
     self.Horde_WatchTower = true
     self.Horde_NextShockAttack = CurTime()
-    self.Horde_ShockAttackInterval = 0.25
+    self.Horde_ShockAttackInterval = 1
     self:SetColor(Color(0, 100, 0))
 
     if self.Horde_Owner:Horde_GetPerk("warden_restock") then
@@ -62,7 +62,7 @@ function ENT:Think()
     end
 
     if CurTime() >= self.Horde_NextShockAttack + self.Horde_ShockAttackInterval then
-local healinfo = HealInfo:New({amount=5, healer=self:GetNWEntity("HordeOwner")})
+local healinfo = HealInfo:New({amount=20, healer=self:GetNWEntity("HordeOwner")})
         for _, ent in pairs(ents.FindInSphere(self:GetPos(), 200)) do
             if ent:IsValid() and ent:IsPlayer() and ent:Health() > 0 and ent:Health() < ent:GetMaxHealth() then
                 ent:EmitSound("HealthKit.Touch")
