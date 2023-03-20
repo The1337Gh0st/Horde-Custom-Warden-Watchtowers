@@ -64,8 +64,7 @@ function ENT:Think()
     if CurTime() >= self.Horde_NextShockAttack + self.Horde_ShockAttackInterval then
 local healinfo = HealInfo:New({amount=10, healer=self:GetNWEntity("HordeOwner")})
         for _, ent in pairs(ents.FindInSphere(self:GetPos(), 200)) do
-            if ent:IsValid() and ent:IsPlayer() then
-			--and ent:Health() > 0 and ent:Health() < ent:GetMaxHealth() then
+            if ent:IsValid() and ent:IsPlayer() and ent:Alive() and ent:Health() > 0 and ent:Health() < ent:GetMaxHealth() then
                 ent:EmitSound("items/medshot4.wav")
 				
 				
